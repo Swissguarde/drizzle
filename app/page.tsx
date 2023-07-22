@@ -1,4 +1,8 @@
-export default function Home() {
+import { fetchAllPosts } from "@/lib/queries";
+
+export default async function Home() {
+  const posts = await fetchAllPosts();
+  console.log("postsData", posts);
   return (
     <div>
       <h2>Categories</h2>

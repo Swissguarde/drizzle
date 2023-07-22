@@ -14,7 +14,7 @@ const RightContent: React.FC<RightContentProps> = () => {
   const [user] = useAuthState(auth);
 
   return (
-    <div>
+    <div className="relative">
       <AuthModal />
       {user ? (
         <div className="flex items-center gap-2">
