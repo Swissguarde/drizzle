@@ -35,8 +35,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
             />
           )}
         </Menu.Button>
-        <Menu.Items className="flex flex-col relative z-50">
-          <div className="flex flex-col gap-3 text-sm absolute top-3 right-1 md:right-10 w-60 md:w-80 bg-white border border-[#EBEAEA] p-3 md:p-6 shadow-md rounded-lg">
+        <Menu.Items className="flex flex-col  z-50">
+          <div className="flex flex-col gap-3 text-sm absolute top-10 md:top-14 right-1 md:right-1 w-60 md:w-80 bg-white border border-[#EBEAEA] p-3 md:p-6 shadow-md rounded-lg">
             <Menu.Item>
               {user && user.photoURL ? (
                 <div className="flex flex-col items-center justify-center">
