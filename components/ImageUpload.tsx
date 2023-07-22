@@ -24,9 +24,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             alt={selectedFile}
             width="400"
             height="400"
+            className="w-64 md:w-[400px] h-64 md:h-[300px] object-cover mb-10"
           />
           <button
-            className="bg-blue-700 text-white p-3 rounded-[8px] font-semibold text-[14px] mt-6"
+            className="bg-blue-700 text-white p-3 rounded-[8px] font-semibold text-[14px]"
             onClick={() => setSelectedFile("")}
           >
             Remove
