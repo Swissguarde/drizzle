@@ -8,7 +8,7 @@ interface FormState {
   category: string;
 }
 
-interface Post {
+interface Project {
   id: string;
   createdAt: Timestamp;
   creatorDisplayName: string;
