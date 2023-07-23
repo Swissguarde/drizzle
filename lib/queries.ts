@@ -1,41 +1,63 @@
 import { firestore } from "@/firebase/clientApp";
 import { Project } from "@/types";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
-// export async function fetchAllPosts() {
+// export async function fetchAllprojects() {
 //   try {
-//     const postsCollection = collection(firestore, "posts");
-//     const querySnapshot = await getDocs(postsCollection);
-//     const postsResult = querySnapshot.docs.map((doc) => ({
+//     const projectsCollection = collection(firestore, "projects");
+//     const querySnapshot = await getDocs(projectsCollection);
+//     const projectsResult = querySnapshot.docs.map((doc) => ({
 //       id: doc.id,
 //       ...doc.data(),
 //     }));
-//     return postsResult as Project[];
+//     return projectsResult as Project[];
 //   } catch (error: any) {
-//     console.log("fetchAllPostsError", error.message);
+//     console.log("fetchAllprojectsError", error.message);
 //   }
 // }
 
-export async function fetchAllPosts(category?: string | null) {
+export async function fetchAllProjects(category?: string | null) {
   try {
-    let postsRef = collection(firestore, "posts");
-    let postsQuery;
+    let projectsRef = collection(firestore, "projects");
+    let projectsQuery;
 
     if (category) {
-      postsQuery = query(postsRef, where("category", "==", category));
+      projectsQuery = query(projectsRef, where("category", "==", category));
     } else {
-      postsQuery = postsRef;
+      projectsQuery = projectsRef;
     }
 
-    const querySnapshot = await getDocs(postsQuery);
+    const querySnapshot = await getDocs(projectsQuery);
 
-    const postsResult = querySnapshot.docs.map((doc) => ({
+    const projectsResult = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    return postsResult;
+    return projectsResult;
   } catch (error: any) {
-    console.log("fetchCategoryError", error.message);
+    console.log("fetchAllProjectsError", error.message);
+  }
+}
+
+export async function getProjectDetail(id: string) {
+  try {
+    const projectsCollection = collection(firestore, "projects");
+    const projectsDocRef = doc(projectsCollection, id);
+    const projectsDocSnap = await getDoc(projectsDocRef);
+    if (projectsDocSnap.exists()) {
+      return projectsDocSnap.data();
+    } else {
+      console.log("Project does not exist");
+    }
+  } catch (error: any) {
+    console.log("getProjectDetailError", error.message);
   }
 }
