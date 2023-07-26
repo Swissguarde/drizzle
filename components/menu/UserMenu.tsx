@@ -29,10 +29,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
               />
             </>
           ) : (
-            <BiUserCircle
-              size={35}
-              className="border border-[#EBEAEA] rounded-full p-1 bg-blue-500 text-white"
-            />
+            <div className="w-[40px] h-[40px] rounded-full mr-2 bg-blue-400 flex items-center justify-center text-white uppercase text-xl">
+              {user?.email!.charAt(0)}
+            </div>
           )}
         </Menu.Button>
         <Menu.Items className="flex flex-col  z-50">
@@ -52,10 +51,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   </h2>
                 </div>
               ) : (
-                <BiUserCircle
-                  size={35}
-                  className="border border-[#EBEAEA] rounded-full p-1 bg-blue-500 text-white"
-                />
+                <div className="w-[70px] h-[70px] rounded-full mr-2 bg-blue-400 flex items-center justify-center text-white uppercase text-2xl">
+                  {user?.email!.charAt(0)}
+                </div>
               )}
             </Menu.Item>
             <div className="mt-6"></div>

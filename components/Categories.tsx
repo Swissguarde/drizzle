@@ -20,9 +20,7 @@ const Categories = () => {
             key={filter}
             onClick={() => handleFilter(filter)}
             className={`${
-              category === filter
-                ? "bg-light-white-300 font-medium"
-                : "font-normal"
+              category === filter ? "bg-[#F3F3F4] font-medium" : "font-normal"
             } px-4 py-3 rounded-lg capitalize whitespace-nowrap cursor-pointer`}
           >
             {filter}

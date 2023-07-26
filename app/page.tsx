@@ -1,6 +1,6 @@
 import Categories from "@/components/Categories";
 import ProjectCard from "@/components/ProjectCard";
-import { fetchAllPosts } from "@/lib/queries";
+import { fetchAllProjects } from "@/lib/queries";
 import { Project } from "@/types";
 
 interface SearchParams {
@@ -11,8 +11,12 @@ interface Props {
   searchParams: SearchParams;
 }
 
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const revalidate = 0;
+
 export default async function Home({ searchParams: { category } }: Props) {
-  const data = (await fetchAllPosts(category)) as Project[];
+  const data = (await fetchAllProjects(category)) as Project[];
   const projects = data || [];
 
   if (projects.length === 0) {

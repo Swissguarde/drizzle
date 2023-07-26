@@ -14,7 +14,8 @@ type ProjectCardProps = {
 };
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
-  const { id, creatorDisplayName, creatorId, imageURL, title } = project;
+  const { id, creatorDisplayName, creatorId, imageURL, title, creatorAvatar } =
+    project;
   const [user] = useAuthState(auth);
   const [randomLikes, setRandomLikes] = useState(0);
   const [randomViews, setRandomViews] = useState("");
@@ -25,6 +26,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       String((Math.floor(Math.random() * 10000) / 1000).toFixed(1) + "k")
     );
   }, []);
+
+  const truncateString = (str: string | undefined, num: number) => {
+    if (str !== undefined) {
+      if (str?.length > num) {
+        return str?.slice(0, num) + "...";
+      } else {
+        return str;
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -40,7 +51,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           alt="project_image"
         />
         <div className="hidden group-hover:flex justify-between items-center absolute bottom-0 right-0 p-3 rounded-b-2xl w-full font-semibold text-xl bg-gradient-to-b from-transparent to-[#0d0c22] transition-colors duration-200 h-1/3">
-          <h2 className="text-white">{title}</h2>
+          <h2 className="text-white">{truncateString(title, 12)}</h2>
           <div className="flex items-center gap-1">
             <div className="bg-white p-2 rounded">
               <TfiTag />
@@ -57,14 +68,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           href={`/user/${creatorId}`}
           className="flex items-center justify-start gap-1"
         >
-          {user?.photoURL && (
+          {creatorAvatar !== null ? (
             <Image
-              src={user.photoURL}
+              src={creatorAvatar}
+              alt="creator_avatar"
               width="25"
               height="25"
-              className="object-cover rounded-full border-3 border-red-500"
-              alt="user_avatar"
+              className="rounded-full object-cover mr-2"
             />
+          ) : (
+            <div className="w-[25px] h-[25px] rounded-full mr-2 bg-blue-400 flex items-center justify-center text-white uppercase text-xl">
+              {creatorDisplayName.charAt(0)}
+            </div>
           )}
 
           <h2>{creatorDisplayName}</h2>

@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { AiOutlinePlus } from "react-icons/ai";
 import FormField from "./FormField";
 import CustomMenu from "./menu/CategoryMenu";
+import { FormState } from "@/types";
 
 type ProjectFormProps = {
   user: User;
@@ -51,7 +52,9 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ user }) => {
       toast.error("Please select an image for poster");
       return;
     }
-    const newPost = {
+    // const createdAtTimestamp = serverTimestamp() as Timestamp;
+    // const createdAtDate = createdAtTimestamp.toDate();
+    const newProject = {
       creatorId: user.uid,
       creatorDisplayName: user.email!.split("@")[0],
       title,
@@ -60,17 +63,21 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ user }) => {
       githubUrl,
       category,
       createdAt: serverTimestamp() as Timestamp,
+      creatorAvatar: user.photoURL !== "" ? user.photoURL : null,
     };
     setLoading(true);
 
     try {
-      const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
+      const projectDocRef = await addDoc(
+        collection(firestore, "projects"),
+        newProject
+      );
       if (selectedFile) {
-        const imageRef = ref(storage, `/posts/${postDocRef.id}/image`);
+        const imageRef = ref(storage, `/projects/${projectDocRef.id}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
         const downloadURL = await getDownloadURL(imageRef);
 
-        await updateDoc(postDocRef, {
+        await updateDoc(projectDocRef, {
           imageURL: downloadURL,
         });
       }
