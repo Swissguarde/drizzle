@@ -65,7 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
       <div className="flex items-center justify-between text-xs text-gray-800 mt-2">
         <Link
-          href={`/user/${creatorId}`}
+          href={`/profile/${creatorId}`}
           className="flex items-center justify-start gap-1"
         >
           {creatorAvatar !== null ? (

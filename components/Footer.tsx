@@ -77,7 +77,7 @@ const Footer: React.FC<FooterProps> = () => {
       </div>
 
       <div className="flex justify-between items-center max-sm:flex-col w-full text-sm font-normal">
-        <p>@ 2023 Swissguard. All rights reserved</p>
+        <p>@ 2023 Drizzle. All rights reserved</p>
         <p className="text-gray">
           <span className="font-semibold text-black">
             22,345 projects submitted

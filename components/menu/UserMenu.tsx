@@ -3,7 +3,6 @@ import { Menu } from "@headlessui/react";
 import { signOut, User } from "firebase/auth";
 import { auth } from "@/firebase/clientApp";
 import Image from "next/image";
-import { BiUserCircle } from "react-icons/bi";
 import Link from "next/link";
 
 type UserMenuProps = {
@@ -64,7 +63,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
               <Link href="/">Account Settings</Link>
             </Menu.Item>
             <Menu.Item>
-              <Link href="/">Profile</Link>
+              <Link href={`/profile/${user?.uid}`}>Profile</Link>
             </Menu.Item>
             <div className="border border-b mt-6"></div>
             <Menu.Item>

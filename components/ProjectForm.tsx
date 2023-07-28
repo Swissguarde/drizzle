@@ -1,9 +1,9 @@
 "use client";
 import ImageUpload from "@/components/ImageUpload";
-import { useRouter } from "next/navigation";
 import { categoryFilters } from "@/constants";
 import { firestore, storage } from "@/firebase/clientApp";
 import useSelectFile from "@/hooks/useSelectFile";
+import { FormState } from "@/types";
 import { User } from "firebase/auth";
 import {
   addDoc,
@@ -13,12 +13,12 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlinePlus } from "react-icons/ai";
 import FormField from "./FormField";
 import CustomMenu from "./menu/CategoryMenu";
-import { FormState } from "@/types";
 
 type ProjectFormProps = {
   user: User;
@@ -52,8 +52,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ user }) => {
       toast.error("Please select an image for poster");
       return;
     }
-    // const createdAtTimestamp = serverTimestamp() as Timestamp;
-    // const createdAtDate = createdAtTimestamp.toDate();
+
     const newProject = {
       creatorId: user.uid,
       creatorDisplayName: user.email!.split("@")[0],

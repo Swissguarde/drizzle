@@ -19,4 +19,5 @@ interface Project {
   liveSiteUrl: string;
   title: string;
   creatorAvatar: string | null;
+  category: string;
 }

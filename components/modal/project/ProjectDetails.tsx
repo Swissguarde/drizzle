@@ -1,14 +1,15 @@
 "use client";
-import React, { Fragment } from "react";
+import RelatedProjects from "@/components/RelatedProjects";
+import { auth } from "@/firebase/clientApp";
 import { Project } from "@/types";
 import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IoMdClose } from "react-icons/io";
-import { AiOutlineHeart, AiOutlineLike, AiOutlineSave } from "react-icons/Ai";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { Fragment } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
+import { AiOutlineHeart, AiOutlineSave } from "react-icons/Ai";
+import { IoMdClose } from "react-icons/io";
 
 type ProjectDetailsProps = {
   data: Project;
@@ -28,8 +29,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
     imageURL,
     liveSiteUrl,
     title,
-    creatorId,
+    category,
     creatorAvatar,
+    creatorId,
   } = data;
   const [user] = useAuthState(auth);
 
@@ -73,21 +75,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                   <h2 className="font-semibold">{title}</h2>
                   <div className="flex items-center my-3">
                     {creatorAvatar !== null ? (
-                      <Image
-                        src={creatorAvatar}
-                        alt="avatar"
-                        width="50"
-                        height="50"
-                        className="rounded-full object-cover mr-2"
-                      />
+                      <Link href={`/profile/${creatorId}`}>
+                        <Image
+                          src={creatorAvatar}
+                          alt="avatar"
+                          width="50"
+                          height="50"
+                          className="rounded-full object-cover mr-2"
+                        />
+                      </Link>
                     ) : (
-                      <div className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl">
+                      <Link
+                        href={`/profile/${creatorId}`}
+                        className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl"
+                      >
                         {creatorDisplayName.charAt(0)}
-                      </div>
+                      </Link>
                     )}
-                    <h2 className="text-gray-600 text-sm">
+                    <Link
+                      href={`/profile/${creatorId}`}
+                      className="text-gray-600 text-sm"
+                    >
                       {creatorDisplayName}
-                    </h2>
+                    </Link>
                   </div>
                   <div className="flex items-center text-4xl gap-1">
                     <button>
@@ -102,17 +112,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                 <div className="hidden mt-10 md:flex items-center justify-between gap-2 w-full max-w-4xl m-auto">
                   <div className="flex items-center md:pl-40">
                     {creatorAvatar !== null ? (
-                      <Image
-                        src={creatorAvatar}
-                        alt="avatar"
-                        width="50"
-                        height="50"
-                        className="rounded-full object-cover mr-2"
-                      />
+                      <Link href={`/profile/${creatorId}`}>
+                        <Image
+                          src={creatorAvatar}
+                          alt="avatar"
+                          width="50"
+                          height="50"
+                          className="rounded-full object-cover mr-2"
+                        />
+                      </Link>
                     ) : (
-                      <div className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl">
+                      <Link
+                        href={`/profile/${creatorId}`}
+                        className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl"
+                      >
                         {creatorDisplayName.charAt(0)}
-                      </div>
+                      </Link>
                     )}
                     <div className="flex flex-col flex-start">
                       <h2 className="font-semibold">{title}</h2>
@@ -157,6 +172,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                     </Link>
                   </div>
                 </section>
+
+                {/* <section>
+                  <RelatedProjects data={data} />
+                </section> */}
               </Dialog.Panel>
             </Transition.Child>
           </div>

@@ -16,7 +16,6 @@ const AuthModal: React.FC<AuthModalProps> = () => {
   useEffect(() => {
     if (user) {
       onClose();
-      console.log("userHere", user);
     }
   }, [user]);
 
