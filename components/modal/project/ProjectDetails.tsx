@@ -1,21 +1,21 @@
 "use client";
-import RelatedProjects from "@/components/RelatedProjects";
-import { auth } from "@/firebase/clientApp";
+import UserProjects from "@/components/UserProjects";
 import { Project } from "@/types";
 import { Dialog, Transition } from "@headlessui/react";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { AiOutlineHeart, AiOutlineSave } from "react-icons/Ai";
+import { AiOutlineHeart, AiOutlineSave } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
 
 type ProjectDetailsProps = {
   data: Project;
+  projects: Project[] | undefined;
 };
 
-const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
+const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data, projects }) => {
   const isOpen = true;
   const router = useRouter();
   const onClose = () => {
@@ -33,7 +33,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
     creatorAvatar,
     creatorId,
   } = data;
-  const [user] = useAuthState(auth);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -75,7 +74,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                   <h2 className="font-semibold">{title}</h2>
                   <div className="flex items-center my-3">
                     {creatorAvatar !== null ? (
-                      <Link href={`/profile/${creatorId}`}>
+                      <div>
                         <Image
                           src={creatorAvatar}
                           alt="avatar"
@@ -83,21 +82,20 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                           height="50"
                           className="rounded-full object-cover mr-2"
                         />
-                      </Link>
+                      </div>
                     ) : (
-                      <Link
-                        href={`/profile/${creatorId}`}
-                        className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl"
-                      >
+                      <div className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl">
                         {creatorDisplayName.charAt(0)}
-                      </Link>
+                      </div>
                     )}
-                    <Link
-                      href={`/profile/${creatorId}`}
-                      className="text-gray-600 text-sm"
-                    >
-                      {creatorDisplayName}
-                    </Link>
+
+                    <div className="flex flex-col flex-start">
+                      <h2 className="text-gray-600">{creatorDisplayName}</h2>
+                      <h2 className="text-gray-400 text-sm">
+                        {moment(new Date(createdAt?.seconds * 1000)).fromNow()}
+                      </h2>
+                      <Link href={`/?category=${category}`}>{category}</Link>
+                    </div>
                   </div>
                   <div className="flex items-center text-4xl gap-1">
                     <button>
@@ -112,26 +110,35 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                 <div className="hidden mt-10 md:flex items-center justify-between gap-2 w-full max-w-4xl m-auto">
                   <div className="flex items-center md:pl-40">
                     {creatorAvatar !== null ? (
-                      <Link href={`/profile/${creatorId}`}>
-                        <Image
-                          src={creatorAvatar}
-                          alt="avatar"
-                          width="50"
-                          height="50"
-                          className="rounded-full object-cover mr-2"
-                        />
-                      </Link>
+                      <Image
+                        src={creatorAvatar}
+                        alt="avatar"
+                        width="50"
+                        height="50"
+                        className="rounded-full object-cover mr-2"
+                      />
                     ) : (
-                      <Link
-                        href={`/profile/${creatorId}`}
-                        className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl"
-                      >
+                      <div className="w-[50px] h-[50px] rounded-full mr-2 bg-blue-400 p-1 flex items-center justify-center text-white uppercase text-2xl">
                         {creatorDisplayName.charAt(0)}
-                      </Link>
+                      </div>
                     )}
                     <div className="flex flex-col flex-start">
                       <h2 className="font-semibold">{title}</h2>
-                      <h2 className="text-gray-600">{creatorDisplayName}</h2>
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-gray-600">{creatorDisplayName}</h2>
+                        <div className="text-gray-600">•</div>
+                        <h2 className="text-gray-400 text-sm">
+                          {moment(
+                            new Date(createdAt?.seconds * 1000)
+                          ).fromNow()}
+                        </h2>
+                      </div>
+                      <Link
+                        href={`/?category=${category}`}
+                        className="text-blue-800 font-semibold text-sm"
+                      >
+                        Category: {category}
+                      </Link>
                     </div>
                   </div>
 
@@ -173,9 +180,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ data }) => {
                   </div>
                 </section>
 
-                {/* <section>
-                  <RelatedProjects data={data} />
-                </section> */}
+                <section>
+                  {projects && projects.length > 0 && (
+                    <div className="mt-14 border-t border-gray-300">
+                      <h2 className="font-bold text-xl md:text-2xl mt-2 lg:px-20 px-5">
+                        More projects by {creatorDisplayName}
+                      </h2>
+                      <UserProjects projects={projects} />
+                    </div>
+                  )}
+                </section>
               </Dialog.Panel>
             </Transition.Child>
           </div>

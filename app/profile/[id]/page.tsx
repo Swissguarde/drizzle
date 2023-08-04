@@ -8,6 +8,8 @@ type UserPageProps = {
   };
 };
 
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Profile - Drizzle",
   description: "View your profile information",

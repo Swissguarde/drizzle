@@ -1,4 +1,5 @@
 import { Project } from "@/types";
+import UtilityModal from "./modal/UtilityModal";
 import ProjectCard from "./ProjectCard";
 
 type UserProjectsProps = {
@@ -6,8 +7,7 @@ type UserProjectsProps = {
 };
 
 const UserProjects = ({ projects }: UserProjectsProps) => {
-  console.log("userprojects", projects);
-  if (projects === undefined) {
+  if (!projects || projects.length === 0) {
     return (
       <div className="text-center">
         No projects yet. Create some projects to see them here
@@ -18,7 +18,7 @@ const UserProjects = ({ projects }: UserProjectsProps) => {
     <section className="flex items-center justify-start flex-col mb-16 lg:px-20 py-6 px-5">
       <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-10 mt-10 w-full">
         {projects?.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.id} project={project} profile />
         ))}
       </div>
     </section>

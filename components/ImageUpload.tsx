@@ -46,6 +46,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             type="file"
             hidden
             onChange={onSelectImage}
+            required
           />
         </div>
       )}

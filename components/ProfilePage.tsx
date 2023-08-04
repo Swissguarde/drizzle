@@ -34,7 +34,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ projects }) => {
 
   if (!user) {
     return (
-      <div className="text-center">
+      <div className="flex items-center justify-center h-[50vh] px-10">
         Login to your account to view your profile page
       </div>
     );
@@ -70,7 +70,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ projects }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-10 text-xl border-b border-gray-300 pb-3">
+      <div className="flex items-center justify-center md:gap-10 md:text-xl border-b border-gray-300 pb-3">
         {LinkTabs.map((item) => (
           <TabItem
             key={item.title}
@@ -80,7 +80,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ projects }) => {
           />
         ))}
       </div>
-      <div className="flex items-center justify-center mt-10">
+      <div className="flex items-center justify-center">
         {selectedTab === "Work" && <UserProjects projects={projects} />}
         {selectedTab === "Collections" && (
           <h2>Collections feature coming soon</h2>

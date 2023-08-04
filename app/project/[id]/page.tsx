@@ -1,5 +1,5 @@
 import ProjectDetails from "@/components/modal/project/ProjectDetails";
-import { getProjectDetail } from "@/lib/queries";
+import { getProjectDetail, getUserProjects } from "@/lib/queries";
 import { Project } from "@/types";
 
 type ProjectProps = {
@@ -10,5 +10,7 @@ type ProjectProps = {
 
 export default async function Project({ params: { id } }: ProjectProps) {
   const data = (await getProjectDetail(id)) as Project;
-  return <ProjectDetails data={data} />;
+  const projects = await getUserProjects(data.creatorId, data.id);
+
+  return <ProjectDetails data={data} projects={projects} />;
 }

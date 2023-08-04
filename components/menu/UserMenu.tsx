@@ -4,14 +4,17 @@ import { signOut, User } from "firebase/auth";
 import { auth } from "@/firebase/clientApp";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type UserMenuProps = {
   user: User | null;
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+  const route = useRouter();
   const logOut = async () => {
     signOut(auth);
+    route.push("/");
   };
   return (
     <>
