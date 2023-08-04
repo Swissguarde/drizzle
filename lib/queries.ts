@@ -1,13 +1,16 @@
-import { firestore } from "@/firebase/clientApp";
+import { firestore, storage } from "@/firebase/clientApp";
 import { Project } from "@/types";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
   query,
   where,
 } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { revalidatePath } from "next/cache";
 import safeJsonStringify from "safe-json-stringify";
 
 // export async function fetchAllprojects() {
@@ -43,7 +46,7 @@ export async function fetchAllProjects(category?: string | null) {
     }));
 
     const data = JSON.parse(safeJsonStringify(projectsResult));
-
+    revalidatePath("/");
     return data;
   } catch (error: any) {
     console.log("fetchAllProjectsError", error.message);
@@ -56,7 +59,12 @@ export async function getProjectDetail(id: string) {
     const projectsDocRef = doc(projectsCollection, id);
     const projectsDocSnap = await getDoc(projectsDocRef);
     if (projectsDocSnap.exists()) {
-      return JSON.parse(safeJsonStringify(projectsDocSnap.data()));
+      return JSON.parse(
+        safeJsonStringify({
+          id: projectsDocSnap.id,
+          ...projectsDocSnap.data(),
+        })
+      );
     } else {
       console.log("Project does not exist");
     }
@@ -86,37 +94,46 @@ export async function getRelatedProjects(
   }
 }
 
-export async function getUserProjects(userId: string) {
+export async function getUserProjects(
+  userId: string,
+  projectIdToExclude?: string
+) {
   try {
     const projectsRef = collection(firestore, "projects");
     const q = query(projectsRef, where("creatorId", "==", userId));
     const querySnapshot = await getDocs(q);
+    const projects: Project[] = [];
 
-    const projectsResult = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    querySnapshot.forEach((doc) => {
+      if (doc.id !== projectIdToExclude) {
+        projects.push(
+          JSON.parse(
+            safeJsonStringify({
+              id: doc.id,
+              ...doc.data(),
+            })
+          )
+        );
+      }
+    });
 
-    const projects = JSON.parse(safeJsonStringify(projectsResult));
     return projects;
   } catch (error: any) {
     console.log("getUserProjectsError", error.message);
   }
 }
 
-// async function fetchProjectsByUser(userId) {
-//   const projectsRef = collection(db, "projects");
-
-//   // Create a query to fetch projects by the given user ID
-//   const q = query(projectsRef, where("userId", "==", userId));
-
-//   // Execute the query
-//   const querySnapshot = await getDocs(q);
-//   const projects = [];
-
-//   querySnapshot.forEach((doc) => {
-//     projects.push({ id: doc.id, ...doc.data() });
-//   });
-
-//   return projects;
-// }
+export async function onDeleteProject(project: Project): Promise<boolean> {
+  try {
+    if (project.imageURL) {
+      const imageRef = ref(storage, `projects/${project.id}/image`);
+      await deleteObject(imageRef);
+    }
+    const postDocRef = doc(firestore, "projects", project.id);
+    await deleteDoc(postDocRef);
+    revalidatePath(`/profile/dzPhwfvsFCSETbLibL8FCAZao283`);
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
