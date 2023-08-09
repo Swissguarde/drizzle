@@ -1,15 +1,18 @@
 "use client";
+import { auth } from "@/firebase/clientApp";
 import useUtilityModal from "@/hooks/useUtilityModal";
-import { onDeleteProject } from "@/lib/queries";
 import { Project } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BsFillEyeFill } from "react-icons/bs";
 import { FcLike } from "react-icons/fc";
 import { MdDeleteOutline } from "react-icons/md";
 import { TfiTag } from "react-icons/tfi";
+import UtilityModal from "./modal/UtilityModal";
 
 type ProjectCardProps = {
   project: Project;
@@ -21,7 +24,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
     project;
   const [randomLikes, setRandomLikes] = useState(0);
   const [randomViews, setRandomViews] = useState("");
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const { onOpen } = useUtilityModal();
+  const router = useRouter();
 
   useEffect(() => {
     setRandomLikes(Math.floor(Math.random() * 10000));
@@ -29,6 +34,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
       String((Math.floor(Math.random() * 10000) / 1000).toFixed(1) + "k")
     );
   }, []);
+  const [user] = useAuthState(auth);
+
+  const isUser = user?.uid === creatorId;
 
   const truncateString = (str: string | undefined, num: number) => {
     if (str !== undefined) {
@@ -39,16 +47,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
       }
     }
   };
-  const handleDelete = async () => {
-    try {
-      const success = await onDeleteProject(project);
-      if (!success) {
-        console.log("fail to delete");
-        throw new Error("Failed to delete project");
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
+
+  const handleEdit = () => {
+    router.push(`/edit-project/${project.id}`);
   };
 
   return (
@@ -97,7 +98,36 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
         </div>
 
         <div className="flex items-center justify-end gap-2">
-          {!profile ? (
+          {profile && isUser ? (
+            <>
+              <UtilityModal project={project} setState={setLoadingDelete} />
+              <div className="text-xl flex items-center space-x-3">
+                <button
+                  onClick={onOpen}
+                  className="hover:text-red-600 hover:scale-150 duration-200"
+                >
+                  {loadingDelete ? (
+                    <Image
+                      src="/spinner.gif"
+                      width={40}
+                      height={40}
+                      alt="spinner_gif"
+                    />
+                  ) : (
+                    <>
+                      <MdDeleteOutline />
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={handleEdit}
+                  className="hover:text-gray-600 hover:scale-150 duration-200"
+                >
+                  <AiOutlineEdit />
+                </button>
+              </div>
+            </>
+          ) : (
             <>
               <div className="flex items-center gap-1">
                 <FcLike />
@@ -106,21 +136,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
               <div className="flex items-center gap-1">
                 <BsFillEyeFill />
                 {randomViews}
-              </div>
-            </>
-          ) : (
-            <>
-              {/* <UtilityModal project={project} /> */}
-              <div className="text-xl flex items-center space-x-3">
-                <button
-                  onClick={handleDelete}
-                  className="hover:text-red-600 hover:scale-150 duration-200"
-                >
-                  <MdDeleteOutline />
-                </button>
-                <button className="hover:text-gray-600 hover:scale-150 duration-200">
-                  <AiOutlineEdit />
-                </button>
               </div>
             </>
           )}

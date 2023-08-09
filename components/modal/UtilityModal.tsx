@@ -4,26 +4,27 @@ import { Project } from "@/types";
 import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { onDeleteProject } from "@/lib/queries";
+import { useRouter } from "next/navigation";
 
 type UtilityModalProps = {
   project: Project;
+  setState: (loading: boolean) => void;
 };
 
-const UtilityModal: React.FC<UtilityModalProps> = ({ project }) => {
+const UtilityModal: React.FC<UtilityModalProps> = ({ project, setState }) => {
   const { isOpen, onClose } = useUtilityModal();
-  const [error, setError] = useState("");
-  console.log("modalProj", project);
+  const router = useRouter();
 
   const handleDelete = async () => {
+    setState(true);
+    onClose();
     try {
-      const success = await onDeleteProject(project);
-      if (!success) {
-        console.log("fail to delete");
-        throw new Error("Failed to delete project");
-      }
+      await onDeleteProject(project);
+      router.refresh();
     } catch (error: any) {
-      setError(error.message);
+      console.log(error.message);
     }
+    setState(false);
   };
 
   return (
@@ -61,17 +62,23 @@ const UtilityModal: React.FC<UtilityModalProps> = ({ project }) => {
                     className="object-cover rounded-2xl"
                     alt="project_image"
                   />
-                  <h2>Are you sure you want to delete?</h2>
+                  <h2>
+                    Are you sure you want to delete{" "}
+                    <span className="font-semibold text-blue-400">
+                      {project.title}
+                    </span>
+                    ?
+                  </h2>
                   <div className="flex items-center gap-2 text-white">
                     <button
-                      className="bg-blue-700 px-3 py-1 rounded"
+                      className="bg-blue-700 px-3 py-1 rounded flex-1 w-20"
                       onClick={handleDelete}
                     >
                       Yes
                     </button>
                     <button
                       onClick={onClose}
-                      className="bg-blue-700 px-3 py-1 rounded"
+                      className="bg-blue-700 px-3 py-1 rounded flex-1 w-20"
                     >
                       No
                     </button>

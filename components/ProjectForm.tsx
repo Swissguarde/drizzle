@@ -3,11 +3,12 @@ import ImageUpload from "@/components/ImageUpload";
 import { categoryFilters } from "@/constants";
 import { firestore, storage } from "@/firebase/clientApp";
 import useSelectFile from "@/hooks/useSelectFile";
-import { FormState } from "@/types";
+import { FormState, Project } from "@/types";
 import { User } from "firebase/auth";
 import {
   addDoc,
   collection,
+  doc,
   serverTimestamp,
   Timestamp,
   updateDoc,
@@ -16,26 +17,28 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import FormField from "./FormField";
 import CustomMenu from "./menu/CategoryMenu";
 
 type ProjectFormProps = {
+  type: string;
   user: User;
+  project?: Project;
 };
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ user }) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({ type, user, project }) => {
   const router = useRouter();
 
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [projectForm, setProjectForm] = useState<FormState>({
-    title: "",
-    description: "",
-    liveSiteUrl: "",
-    githubUrl: "",
-    category: "",
+    title: project?.title || "",
+    description: project?.description || "",
+    liveSiteUrl: project?.liveSiteUrl || "",
+    githubUrl: project?.githubUrl || "",
+    category: project?.category || "",
   });
 
   const { title, description, category, githubUrl, liveSiteUrl } = projectForm;
@@ -48,54 +51,87 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ user }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedFile || selectedFile.length === 0) {
+    if (!selectedFile || selectedFile.length === 0 || !project?.imageURL) {
       toast.error("Please select an image for poster");
       return;
     }
 
-    const newProject = {
-      creatorId: user.uid,
-      creatorDisplayName: user.email!.split("@")[0],
+    setLoading(true);
+
+    const updatedProject = {
       title,
       description,
       liveSiteUrl,
       githubUrl,
       category,
-      createdAt: serverTimestamp() as Timestamp,
-      creatorAvatar: user.photoURL !== "" ? user.photoURL : null,
     };
-    setLoading(true);
 
     try {
-      const projectDocRef = await addDoc(
-        collection(firestore, "projects"),
-        newProject
-      );
-      if (selectedFile) {
-        const imageRef = ref(storage, `/projects/${projectDocRef.id}/image`);
-        await uploadString(imageRef, selectedFile, "data_url");
-        const downloadURL = await getDownloadURL(imageRef);
+      if (type === "Edit" && project) {
+        const projectDocRef = doc(firestore, "projects", project.id);
+        await updateDoc(projectDocRef, updatedProject);
 
-        await updateDoc(projectDocRef, {
-          imageURL: downloadURL,
-        });
+        if (selectedFile) {
+          const imageRef = ref(storage, `/projects/${project.id}/image`);
+          await uploadString(imageRef, selectedFile, "data_url");
+          const downloadURL = await getDownloadURL(imageRef);
+
+          await updateDoc(projectDocRef, {
+            imageURL: downloadURL,
+          });
+        }
+
+        toast.success("Project updated successfully");
+        router.push("/");
+      } else {
+        const newProject = {
+          creatorId: user.uid,
+          creatorDisplayName: user.email!.split("@")[0],
+          ...updatedProject,
+          createdAt: serverTimestamp() as Timestamp,
+          creatorAvatar: user.photoURL !== "" ? user.photoURL : null,
+        };
+
+        const projectDocRef = await addDoc(
+          collection(firestore, "projects"),
+          newProject
+        );
+
+        if (selectedFile) {
+          const imageRef = ref(storage, `/projects/${projectDocRef.id}/image`);
+          await uploadString(imageRef, selectedFile, "data_url");
+          const downloadURL = await getDownloadURL(imageRef);
+
+          await updateDoc(projectDocRef, {
+            imageURL: downloadURL,
+          });
+        }
+
+        toast.success("Project created successfully");
+        router.push("/");
       }
-      router.back();
     } catch (error: any) {
       console.log("handleSubmitError", error.message);
       setError(true);
     }
+
     setLoading(false);
   };
 
   return (
     <div className="flex flex-col items-center justify-center mt-10 md:px-32">
-      <h2 className="font-semibold text-2xl">What have you been working on?</h2>
+      <h2 className="font-semibold text-2xl">
+        {type === "Edit"
+          ? `Edit ${project?.title}`
+          : "What have you been working on?"}
+      </h2>
       <div className="my-10 border-2 rounded-lg border-dashed border-gray-400 w-full h-96 md:h-[500px] flex justify-center items-center">
         <ImageUpload
           selectedFile={selectedFile}
           onSelectImage={onSelectFile}
           setSelectedFile={setSelectedFile}
+          image={project?.imageURL}
+          type={type}
         />
       </div>
       <form
