@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import React from "react";
 
 import AuthCheck from "@/components/AuthCheck";
+import { useRouter } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Drizzle - Create Post",
@@ -11,12 +12,19 @@ export const metadata: Metadata = {
 type CreateProjectProps = {};
 
 const CreateProject: React.FC<CreateProjectProps> = () => {
+  const router = useRouter();
   const disabled = true;
+  const handleClick = () => {
+    router.push("/");
+  };
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
-        <button className="bg-gray-100/60 border p-2 md:p-3 text-sm rounded-[8px]">
+        <button
+          onClick={handleClick}
+          className="bg-gray-100/60 border p-2 md:p-3 text-sm rounded-[8px]"
+        >
           Cancel
         </button>
         <button

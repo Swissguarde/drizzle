@@ -13,20 +13,6 @@ import { deleteObject, ref } from "firebase/storage";
 import { revalidatePath } from "next/cache";
 import safeJsonStringify from "safe-json-stringify";
 
-// export async function fetchAllprojects() {
-//   try {
-//     const projectsCollection = collection(firestore, "projects");
-//     const querySnapshot = await getDocs(projectsCollection);
-//     const projectsResult = querySnapshot.docs.map((doc) => ({
-//       id: doc.id,
-//       ...doc.data(),
-//     }));
-//     return projectsResult as Project[];
-//   } catch (error: any) {
-//     console.log("fetchAllprojectsError", error.message);
-//   }
-// }
-
 export async function fetchAllProjects(category?: string | null) {
   try {
     let projectsRef = collection(firestore, "projects");
@@ -46,7 +32,6 @@ export async function fetchAllProjects(category?: string | null) {
     }));
 
     const data = JSON.parse(safeJsonStringify(projectsResult));
-    revalidatePath("/");
     return data;
   } catch (error: any) {
     console.log("fetchAllProjectsError", error.message);
