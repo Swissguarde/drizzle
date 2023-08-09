@@ -3,6 +3,7 @@ import { auth } from "@/firebase/clientApp";
 import useAuthModal from "@/hooks/useAuthModal";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { FIREBASE_ERRORS } from "@/firebase/error";
+import toast from "react-hot-toast";
 
 type SignUpProps = {};
 
@@ -35,6 +36,7 @@ const SignUp: React.FC<SignUpProps> = () => {
       return;
     }
     createUserWithEmailAndPassword(email, password);
+    toast.success("Logged In");
   };
   return (
     <div className="w-full">

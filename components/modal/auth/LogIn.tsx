@@ -3,6 +3,7 @@ import { FIREBASE_ERRORS } from "@/firebase/error";
 import useAuthModal from "@/hooks/useAuthModal";
 import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import toast from "react-hot-toast";
 
 type LogInProps = {};
 
@@ -26,6 +27,7 @@ const LogIn: React.FC<LogInProps> = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     signInWithEmailAndPassword(email, password);
+    toast.success("Logged In");
   };
   return (
     <div className="w-full">
