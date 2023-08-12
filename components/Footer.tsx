@@ -13,7 +13,7 @@ interface ColumnProps {
 const FooterColumn = ({ title, links }: ColumnProps) => {
   return (
     <div className="flex-1 flex flex-col gap-3 text-sm min-w-max">
-      <h4 className="font-semibold">{title}</h4>
+      <p className="font-semibold">{title}</p>
       <div className="flex flex-col gap-2 font-normal">
         {links.map((link) => (
           <Link href="/" key={link}>
