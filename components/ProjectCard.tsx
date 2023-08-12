@@ -72,6 +72,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
             height="1000"
             className="object-cover rounded-2xl"
             alt="project_image"
+            loading="eager"
           />
         )}
         <div className="hidden group-hover:flex justify-between items-center absolute bottom-0 right-0 p-3 rounded-b-2xl w-full font-semibold text-xl bg-gradient-to-b from-transparent to-[#0d0c22] transition-colors duration-200 h-1/3">
