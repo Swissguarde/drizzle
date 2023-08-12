@@ -11,10 +11,6 @@ interface Props {
   searchParams: SearchParams;
 }
 
-// export const dynamic = "force-dynamic";
-// export const dynamicParams = true;
-// export const revalidate = 0;
-
 export default async function Home({ searchParams: { category } }: Props) {
   const data = (await fetchAllProjects(category)) as Project[];
   const projects = data || [];
