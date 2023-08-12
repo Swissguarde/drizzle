@@ -37,8 +37,6 @@ export default async function Home({ searchParams: { category } }: Props) {
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>
-
-      <h2>Load More</h2>
     </section>
   );
 }
