@@ -48,10 +48,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ type, user, project }) => {
       [fieldName]: value,
     }));
   };
+  console.log(!project?.imageURL);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedFile || selectedFile.length === 0 || !project?.imageURL) {
+    if (!selectedFile && !project?.imageURL) {
       toast.error("Please select an image for poster");
       return;
     }
@@ -83,6 +84,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ type, user, project }) => {
 
         toast.success("Project updated successfully");
         router.push("/");
+        router.refresh();
       } else {
         const newProject = {
           creatorId: user.uid,
@@ -109,6 +111,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ type, user, project }) => {
 
         toast.success("Project created successfully");
         router.push("/");
+        router.refresh();
       }
     } catch (error: any) {
       console.log("handleSubmitError", error.message);

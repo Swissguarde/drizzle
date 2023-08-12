@@ -58,13 +58,22 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, profile }) => {
         href={`/project/${id}`}
         className="flex items-center justify-center group relative"
       >
-        <Image
-          src={imageURL}
-          width="900"
-          height="1000"
-          className="object-cover rounded-2xl"
-          alt="project_image"
-        />
+        {loadingDelete ? (
+          <Image
+            src="/spinner.gif"
+            width={900}
+            height={500}
+            alt="spinner_gif"
+          />
+        ) : (
+          <Image
+            src={imageURL}
+            width="900"
+            height="1000"
+            className="object-cover rounded-2xl"
+            alt="project_image"
+          />
+        )}
         <div className="hidden group-hover:flex justify-between items-center absolute bottom-0 right-0 p-3 rounded-b-2xl w-full font-semibold text-xl bg-gradient-to-b from-transparent to-[#0d0c22] transition-colors duration-200 h-1/3">
           <h2 className="text-white">{truncateString(title, 12)}</h2>
           <div className="flex items-center gap-1">
