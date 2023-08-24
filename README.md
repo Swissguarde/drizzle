@@ -55,6 +55,10 @@ To run this project, you will need to add the following environment variables to
 
 `NEXT_PUBLIC_FIREBASE_APP_ID`
 
+## Images
+
+![Drizzle](https://github.com/Swissguarde/drizzle/assets/88935495/0f6d2e3f-6232-450a-88ad-bcc1a6d41314)
+
 
 ## Contributing
 
